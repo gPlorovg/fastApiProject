@@ -1,32 +1,174 @@
 <!doctype html>
-<html>
+<html lang="ru">
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>{{ title }}</title>
-  <link rel="stylesheet" href="{{ url_for('static', path='/css/pico.css') }}">
+
+  <link rel="stylesheet" href="{{ url_for('static', path='/css/main.css') }}">
+  <link rel="icon" href="{{ url_for('static', path='/img/favicon.jpg') }}">
 </head>
 <body>
-  <main class="container">
-    <h1>{{ title }}</h1>
 
-    {% if success %}
-      <article class="contrast">
-        <p>Спасибо! Заявка отправлена.</p>
+  <header class="container-fluid header">
+    <nav class="container">
+      <strong class="brand"><a href="#top">{{ title }}</a></strong>
+      <ul>
+        <li><a href="#features">Преимущества</a></li>
+        <li><a href="#gallery">Галерея</a></li>
+        <li><a href="#pricing">Тарифы</a></li>
+        <li><a href="#cta" role="button" class="contrast">Попробовать</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="container hero">
+      <div class="grid">
+        <div>
+          <h1>Самый лучший кейтеринг Москвы</h1>
+          <p class="lead">Привозим попить и покушать за ваши деревянные</p>
+          <div class="actions">
+            <a href="#cta" role="button">Хочу кушац!</a>
+          </div>
+        </div>
+        <figure>
+          <img src="{{ url_for('static', path='/img/catering.jpg') }}" alt="Вот так вкусно будет, мамой клянусь!">
+          <figcaption>Вот так вкусно будет, мамой клянусь!</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section id="features" class="container">
+      <h2>Почему мы</h2>
+      <div class="grid features">
+        <article>
+          <img class="icon" src="{{ url_for('static', path='/img/desserts.jpg') }}" alt="сладенькое" aria-hidden="true">
+          <h3>Десертики</h3>
+          <p>Любишь сладенькое - выбирай нас!</p>
+        </article>
+        <article>
+          <img class="icon" src="{{ url_for('static', path='/img/fryies.jpg') }}" alt="жирненькое" aria-hidden="true">
+          <h3>Фритюрщина</h3>
+          <p>Любишь жирненькое - выбирай нас!</p>
+        </article>
+        <article>
+          <img class="icon" src="{{ url_for('static', path='/img/drinks.jpg') }}" alt="жиденькое" aria-hidden="true">
+          <h3>Напиточки</h3>
+          <p>Любишь жиденькое - выбирай нас!</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="gallery" class="container">
+      <h2>Как это выглядит</h2>
+      <div class="grid gallery">
+        <figure><img src="{{ url_for('static', path='/img/example1.jpg') }}" alt="Круто фото"></figure>
+        <figure><img src="{{ url_for('static', path='/img/example2.jpg') }}" alt="Круто фото 2"></figure>
+      </div>
+    </section>
+
+    <section id="pricing" class="container">
+      <h2>Тарифы</h2>
+      <div class="grid pricing">
+        <article>
+          <header>Базовый</header>
+          <h3>0 ₽ (по договорняку)</h3>
+          <ul>
+            <li>Мы приехать</li>
+            <li>Мы привозить покушац</li>
+            <li>Мы уехать</li>
+          </ul>
+          <a href="#cta" role="button" class="secondary">Выбрать</a>
+        </article>
+        <article class="contrast">
+          <header>Профессиональный</header>
+          <h3>4999 ₽</h3>
+          <ul>
+            <li>Мы приехать когда ты хотеть</li>
+            <li>Мы привозить что ты хотеть</li>
+            <li>Мы при тебе не ругаться</li>
+          </ul>
+          <a href="#cta" role="button">Выбрать</a>
+        </article>
+      </div>
+    </section>
+
+    <section id="cta" class="container">
+      <article>
+        <h2>Хотеть попробовать?</h2>
+<!--        {% if success %}-->
+<!--          <p class="ok">От душу душевно в душу! Заявка отправлена.</p>-->
+<!--        {% endif %}-->
+        <form method="post" action="/submit">
+          <div class="grid">
+            <label>Имя
+              <input name="name" type="text" required maxlength="120">
+            </label>
+            <label>Email
+              <input name="email" type="email" required>
+            </label>
+          </div>
+          <label>Сообщение
+            <textarea name="message" rows="4" maxlength="5000" placeholder="Шо хотеть писать сюда"></textarea>
+          </label>
+          <button type="submit">Отправить</button>
+        </form>
       </article>
-    {% endif %}
-
-    <form method="post" action="/submit">
-      <label>Имя
-        <input name="name" type="text" required maxlength="120">
-      </label>
-      <label>Email
-        <input name="email" type="email" required>
-      </label>
-      <label>Сообщение
-        <textarea name="message" rows="4" maxlength="5000"></textarea>
-      </label>
-      <button type="submit">Отправить</button>
-    </form>
+    </section>
   </main>
+
+  <footer class="container footer">
+    <small>© {{ 2025 }} {{ title }} · <a href="#top">Наверх ↑</a></small>
+  </footer>
+
+  <dialog id="popup">
+    <article>
+      {% if status == 'ok' %}
+        <header><strong class="ok">Успешно</strong></header>
+        <p>От душу душевно в душу! Заявка отправлена.</p>
+      {% elif status == 'dup' %}
+        <header><strong class="err">Уже отправляли</strong></header>
+        <p>Брат подожди, мы тебе позвоним.</p>
+      {% elif status == 'err' %}
+        <header><strong class="err">Ошибка</strong></header>
+        <p>Не получилось сохранить. Попробуйте ещё раз позже.</p>
+      {% endif %}
+      <footer>
+        <button id="popup-close" autofocus>Ок</button>
+      </footer>
+    </article>
+  </dialog>
+
+  <!-- Попап -->
+  <script>
+    (function () {
+      const dlg = document.getElementById('popup');
+      const btn = document.getElementById('popup-close');
+
+      const params = new URLSearchParams(location.search);
+      const status = params.get('status'); // ok | dup | err | null
+      if (status && dlg && typeof dlg.showModal === 'function') {
+        dlg.showModal();
+        const url = new URL(location);
+        url.searchParams.delete('status');
+        history.replaceState(null, '', url);
+      }
+
+      btn?.addEventListener('click', () => dlg.close());
+      dlg?.addEventListener('cancel', (e) => { e.preventDefault(); dlg.close(); }); // Esc
+    })();
+  </script>
+
+  <!-- Плавный скролл -->
+  <script>
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', e => {
+        const id = a.getAttribute('href').slice(1);
+        const el = document.getElementById(id);
+        if (el) { e.preventDefault(); el.scrollIntoView({behavior: 'smooth'}); }
+      });
+    });
+  </script>
 </body>
 </html>

@@ -1,9 +1,11 @@
+from asyncio import start_unix_server
 from contextlib import asynccontextmanager
 from typing import Annotated
-from fastapi import FastAPI, Request, Form, Depends
+from fastapi import FastAPI, Request, Form, Depends, Query
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.db import engine, Base, get_session
 from app import models
@@ -24,8 +26,8 @@ app.mount("/static", StaticFiles(directory="app/static"), name="static")
 Db = Annotated[AsyncSession, Depends(get_session)]
 
 @app.get("/", response_class=HTMLResponse)
-async def index(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request, "title": "Catering"})
+async def index(request: Request, status: str | None = Query(None)):
+    return templates.TemplateResponse("index.html", {"request": request, "title": "Catering", "status": status})
 
 @app.post("/submit", response_class=HTMLResponse)
 async def submit(
@@ -35,7 +37,14 @@ async def submit(
     email: str = Form(...),
     message: str | None = Form(None),
 ):
-    order = models.Order(name=name, email=email, message=message)
+    order = models.Order(name=name.strip(), email=email.strip(), message=message.strip())
     db.add(order)
-    await db.commit()
-    return RedirectResponse(url="/?success=1", status_code=303)
+    try:
+        await db.commit()
+        return RedirectResponse(url="/?status=ok", status_code=303)
+    except IntegrityError:
+        await db.rollback()
+        return RedirectResponse("/?status=dup", status_code=303)
+    except Exception:
+        await db.rollback()
+        return RedirectResponse("/?status=err", status_code=303)

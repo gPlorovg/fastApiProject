@@ -2833,3 +2833,27 @@ textarea,
     transition-duration: 0s !important;
   }
 }
+
+
+.header { backdrop-filter: blur(6px); border-bottom: 1px solid var(--muted-border-color); }
+.header nav { display:flex; align-items:center; justify-content:space-between; padding: .75rem 0; }
+.header .brand a { text-decoration: none; }
+
+.hero { padding: 3rem 0 2rem; }
+.hero .lead { font-size: 1.15rem; opacity: .9; }
+.hero .actions { display:flex; gap:.5rem; margin: 1rem 0; }
+.hero .bullets { list-style:none; padding-left:0; display:flex; gap:1rem; flex-wrap:wrap; margin:0.5rem 0 0; }
+.hero figure { margin:0; }
+
+.features .icon { width:48px; height:48px; margin-bottom:.5rem; }
+
+.gallery figure { margin:0; }
+.gallery img { width:100%; border-radius: .75rem; }
+
+.pricing article { display:flex; flex-direction:column; gap:.5rem; }
+.pricing header { font-weight:600; opacity:.8; }
+
+.footer { padding: 2rem 0; text-align:center; border-top: 1px solid var(--muted-border-color); }
+
+.ok { background:#e6ffed; color:#024c1a; padding:.5rem .75rem; border-radius:.5rem; }
+.accent { color: var(--primary); }
